@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class ColorManager : MonoBehaviour
 {
-    public GameObject[] gameObjects = null;
+    public GameObject[] gameObjectsLevel1 = null;
+    public GameObject[] gameObjectsLevel2 = null;
     public Sprite[] blackGameObjects = null;
     // public Sprite[] whiteGameObjects = null;
     public Sprite[] blueGameObjects = null;
@@ -49,15 +50,25 @@ public class ColorManager : MonoBehaviour
 
     private void SetSprites(Sprite[] sprites)
     {
-        if (gameObjects.Length != sprites.Length)
+        if (gameObjectsLevel1.Length != sprites.Length)
         {
             Debug.LogError("Number of GameObjects and Sprites do not match!");
             return;
         }
 
-        for (int i = 0; i < gameObjects.Length; i++)
+        if (gameObjectsLevel2.Length != sprites.Length)
         {
-            gameObjects[i].GetComponent<SpriteRenderer>().sprite = sprites[i];
+            Debug.LogError("Number of GameObjects and Sprites do not match!");
+            return;
+        }
+
+        for (int i = 0; i < gameObjectsLevel1.Length; i++)
+        {
+            gameObjectsLevel1[i].GetComponent<SpriteRenderer>().sprite = sprites[i];
+        }
+        for (int i = 0; i < gameObjectsLevel2.Length; i++)
+        {
+            gameObjectsLevel2[i].GetComponent<SpriteRenderer>().sprite = sprites[i];
         }
     }
 
