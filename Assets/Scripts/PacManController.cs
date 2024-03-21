@@ -71,7 +71,10 @@ public class PacManController : MonoBehaviour
         }
     }
 
-
+    public void Die()
+    {
+        Time.timeScale = 1;
+    }
     void FixedUpdate()
     {
         if (isDragging)

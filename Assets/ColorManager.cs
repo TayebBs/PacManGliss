@@ -9,38 +9,47 @@ public class ColorManager : MonoBehaviour
     public Sprite[] blackGameObjects = null;
    // public Sprite[] whiteGameObjects = null;
     public Sprite[] blueGameObjects = null;
+    public Sprite[] yellowGameObjects = null;
     public GameObject level1;
     public GameObject level2;
     private void Start()
     {
        SelectRandomLevel();
+     //   ChooseColor("Blue");
     }
-    public void ChooseColor(string _color)
+    public void ChooseColor(string color)
     {
-        if (_color == "Black")
+        switch (color)
         {
-            foreach (GameObject go in gameObjects)
-            {
-                foreach(Sprite s in blackGameObjects)
-                {
-                    go.GetComponent<SpriteRenderer>().sprite = s;
-
-                }
-            }
+            case "Black":
+                SetSprites(blackGameObjects);
+                break;
+            case "Blue":
+                SetSprites(blueGameObjects);
+                break;
+            case "Yellow":
+                SetSprites(yellowGameObjects);
+                break;
+            default:
+                Debug.LogWarning("Unknown color: " + color);
+                break;
         }
-        if (_color == "Blue")
-        {
-            foreach (GameObject go in gameObjects)
-            {
-                foreach (Sprite s in blueGameObjects)
-                {
-                    go.GetComponent<SpriteRenderer>().sprite = s;
-
-                }
-            }
-        }
-       
     }
+
+    private void SetSprites(Sprite[] sprites)
+    {
+        if (gameObjects.Length != sprites.Length)
+        {
+            Debug.LogError("Number of GameObjects and Sprites do not match!");
+            return;
+        }
+
+        for (int i = 0; i < gameObjects.Length; i++)
+        {
+            gameObjects[i].GetComponent<SpriteRenderer>().sprite = sprites[i];
+        }
+    }
+
     public void SelectRandomLevel()
     {
         int random = Random.Range(0, 2);
