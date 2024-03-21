@@ -13,6 +13,7 @@ public class PacManController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -40,16 +41,30 @@ public class PacManController : MonoBehaviour
                 {
                     case 1:
                         moveDirection = Vector2.up; // Up swipe
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
+
+                        transform.rotation = Quaternion.Euler(0, 0, 90);
+                        spriteRenderer.flipX = false;
                         break;
                     case -1:
                         moveDirection = Vector2.down; // Down swipe
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
+
+                        transform.rotation = Quaternion.Euler(0, 0, -90);
+                        spriteRenderer.flipX = false;
                         break;
                     case 0:
                         if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
                             moveDirection = Vector2.right; // Right swipe (consider horizontal priority)
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                        spriteRenderer.flipX = false;
+
                         break;
                     case 2:
                         moveDirection = Vector2.left; // Left swipe
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                        spriteRenderer.flipX = true;
+
                         break;
                 }
             }
