@@ -19,58 +19,71 @@ public class PacManController : MonoBehaviour
 
     void Update()
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.touchCount > 0)
         {
-            isDragging = true;
-            touchStartPos = Input.GetTouch(0).position;
-            swipeDelta = Vector2.zero;
-        }
+            Touch touch = Input.GetTouch(0);
 
-        if (Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Ended || Input.GetTouch(0).phase == TouchPhase.Canceled))
-        {
-            isDragging = false;
-            if (swipeDelta.magnitude > 100) // Minimum swipe distance threshold
+            if (touch.phase == TouchPhase.Began)
             {
-                swipeDelta = (Vector2)Input.GetTouch(0).position - touchStartPos;
-                float swipeAngle = Mathf.Atan2(swipeDelta.y, swipeDelta.x) * Mathf.Rad2Deg; // Convert radians to degrees
-
-                // Restrict movement based on swipe angle (90-degree increments)
-                int angleDivision = Mathf.RoundToInt(swipeAngle / 90); // Divide by 90 and round to nearest integer
-                moveDirection = Vector2.zero;
-
-                switch (angleDivision)
+                touchStartPos = touch.position;
+                isDragging = true;
+            }
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                if (isDragging)
                 {
-                    case 1:
-                        moveDirection = Vector2.up; // Up swipe
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                    Vector2 touchEndPos = touch.position;
+                    swipeDelta = touchEndPos - touchStartPos;
 
-                        transform.rotation = Quaternion.Euler(0, 0, 90);
-                        spriteRenderer.flipX = false;
-                        break;
-                    case -1:
-                        moveDirection = Vector2.down; // Down swipe
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                    if (swipeDelta.magnitude > 200) // Minimum swipe distance threshold
+                    {
+                        float angle = Mathf.Atan2(swipeDelta.y, swipeDelta.x) * Mathf.Rad2Deg;
+                        angle = (angle + 360) % 360; // Ensure angle is within [0, 360)
 
-                        transform.rotation = Quaternion.Euler(0, 0, -90);
-                        spriteRenderer.flipX = false;
-                        break;
-                    case 0:
-                        if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
-                            moveDirection = Vector2.right; // Right swipe (consider horizontal priority)
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
-                        spriteRenderer.flipX = false;
+                        // Determine the swipe direction based on the angle
+                        if (angle >= 45 && angle < 135)
+                        {
+                            moveDirection = Vector2.up;
+                            transform.rotation = Quaternion.Euler(0, 0, 0);
 
-                        break;
-                    case 2:
-                        moveDirection = Vector2.left; // Left swipe
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
-                        spriteRenderer.flipX = true;
+                            transform.rotation = Quaternion.Euler(0, 0, 90);
+                            spriteRenderer.flipX = false;
+                        }// Up swipe
+                       
+                        else if (angle >= 135 && angle < 225)
+                        {
+                            // Left swipe
+                            moveDirection = Vector2.left;
+                            transform.rotation = Quaternion.Euler(0, 0, 0);
+                            spriteRenderer.flipX = true;
+                        } 
+                        else if (angle >= 225 && angle < 315)
+                        {
+                            moveDirection = Vector2.down;
+                            transform.rotation = Quaternion.Euler(0, 0, 0);
 
-                        break;
+                            transform.rotation = Quaternion.Euler(0, 0, -90);
+                            spriteRenderer.flipX = false;
+                        } // Down swipe
+                           
+                        else
+                        {
+                            // Right swipe
+
+                            moveDirection = Vector2.right;
+                            transform.rotation = Quaternion.Euler(0, 0, 0);
+                            spriteRenderer.flipX = false;
+                        }
+                    
+
+                        // Reset the swipe state
+                        isDragging = false;
+                    }
                 }
             }
         }
     }
+
 
     public void Die()
     {
