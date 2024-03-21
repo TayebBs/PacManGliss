@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,10 +14,15 @@ public class ColorManager : MonoBehaviour
     public Sprite[] yellowGameObjects = null;
     public GameObject level1;
     public GameObject level2;
+    public String color;
     private void Start()
     {
        SelectRandomLevel();
-     //   ChooseColor("Blue");
+       ChooseColor(color);
+    }
+    public void SetColor(string _color)
+    {
+        color = _color;
     }
     public void ChooseColor(string color)
     {
@@ -52,7 +59,7 @@ public class ColorManager : MonoBehaviour
 
     public void SelectRandomLevel()
     {
-        int random = Random.Range(0, 2);
+        int random = UnityEngine.Random.Range(0, 2);
         if (random == 0)
         {
             level1.SetActive(true);

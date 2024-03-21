@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TimeManager : MonoBehaviour
 {
@@ -22,9 +23,10 @@ public class TimeManager : MonoBehaviour
     private float currentTime;
     public bool isRunning = false;
     public static TimeManager instance;
-  //  UiManager myUiManager;
+    //  UiManager myUiManager;
+    bool isSent=false;
   //  FinishManager myFinishManager;
-    ScoreManager myScoreManager;
+   public ScoreManager myScoreManager;
 
     private void Awake()
     {
@@ -45,9 +47,9 @@ public class TimeManager : MonoBehaviour
     private void Start()
     {
         // myUiManager = UiManager.instance;
-      //  myScoreManager = ScoreManager.instance;
+        //  myScoreManager = ScoreManager.instance;
         //   myFinishManager = FinishManager.instance;
-
+        PauseTime(true);
         if (autoStart)
             StartTimer();
     }
@@ -71,19 +73,20 @@ public class TimeManager : MonoBehaviour
             }
             if (currentTime == 0)
             {
+                if (Application.platform == RuntimePlatform.Android&&!isSent)
+                {
+                    using (AndroidJavaClass jc = new AndroidJavaClass("com.azesmwayreactnativeunity.ReactNativeUnityViewManager"))
+                    {
+                        jc.CallStatic("sendMessageToMobileApp", ScoreManager.Score);
+                        Debug.Log("sendMessageToMobileApp " + ScoreManager.Score);
+                        isSent = true;
+                    }
+                }
                 //myScoreManager.EndGame(false);
-                Time.timeScale = 0;
                 // myFinishManager.ShowButton();
                 // myUiManager.ShowLosePanel();
-                // if (Application.platform == RuntimePlatform.Android)
-                // {
-                //     using (AndroidJavaClass jc = new AndroidJavaClass("com.azesmwayreactnativeunity.ReactNativeUnityViewManager"))
-                //     {
-                //         jc.CallStatic("sendMessageToMobileApp", myScoreManager.score);
-                //         Debug.Log("sendMessageToMobileApp " + myScoreManager.score);
-                //     }
-                // }
 
+                RestartScene();
             }
             // Update the UI Text to display the remaining time.
             TimeSpan timeSpan = TimeSpan.FromSeconds(currentTime);
@@ -99,8 +102,16 @@ public class TimeManager : MonoBehaviour
         OnTimerStart.Invoke();
         // myFinishManager.HideButton();
     }
+    public void RestartScene()
+    {
+        // Get the current scene's build index
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        ScoreManager.Score = 0;
 
-    public void PauseTimer()
+        // Reload the current scene
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+        public void PauseTimer()
     {
         isRunning = false;
     }
@@ -114,5 +125,16 @@ public class TimeManager : MonoBehaviour
     {
         currentTime = totalTime;
         isRunning = false;
+    }
+    public void PauseTime(bool _isTrue)
+    {
+        if (_isTrue)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
     }
 }

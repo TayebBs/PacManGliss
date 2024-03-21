@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PacManController : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class PacManController : MonoBehaviour
     private Vector2 touchStartPos, swipeDelta; // Stores touch start and delta
     private bool isDragging = false; // Flag to track swipe
     private bool isHorizontalSwipe, isVerticalSwipe; // Flags for swipe direction
-
+    bool isSent=false;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -73,7 +74,25 @@ public class PacManController : MonoBehaviour
 
     public void Die()
     {
-        Time.timeScale = 1;
+      
+        if (Application.platform == RuntimePlatform.Android&&!isSent)
+        {
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.azesmwayreactnativeunity.ReactNativeUnityViewManager"))
+            {
+                jc.CallStatic("sendMessageToMobileApp", ScoreManager.Score);
+                Debug.Log("sendMessageToMobileApp " + ScoreManager.Score);
+                isSent = true;
+            }
+        }
+        RestartScene(); 
+    }
+    public void RestartScene()
+    {
+        // Get the current scene's build index
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        ScoreManager.Score = 0;
+        // Reload the current scene
+        SceneManager.LoadScene(currentSceneIndex);
     }
     void FixedUpdate()
     {
