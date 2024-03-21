@@ -10,7 +10,7 @@ public class PacManController : MonoBehaviour
     private Vector2 touchStartPos, swipeDelta; // Stores touch start and delta
     private bool isDragging = false; // Flag to track swipe
     private bool isHorizontalSwipe, isVerticalSwipe; // Flags for swipe direction
-    bool isSent=false;
+    bool isSent = false;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -74,20 +74,37 @@ public class PacManController : MonoBehaviour
 
     public void Die()
     {
-      
-        if (Application.platform == RuntimePlatform.Android&&!isSent)
+        Debug.Log("die !");
+        if (Application.platform == RuntimePlatform.Android && !isSent)
         {
             using (AndroidJavaClass jc = new AndroidJavaClass("com.azesmwayreactnativeunity.ReactNativeUnityViewManager"))
             {
-                jc.CallStatic("sendMessageToMobileApp", ScoreManager.Score);
+                string jsonString = "{\"score\":" + ScoreManager.Score + ",\"glissNodes\":" + ScoreManager.TotalGlissNodes + "}";
+                jc.CallStatic("sendMessageToMobileApp", jsonString);
                 Debug.Log("sendMessageToMobileApp " + ScoreManager.Score);
                 isSent = true;
             }
         }
-        RestartScene(); 
+        RestartScene();
+    }
+    public void Win()
+    {
+        Debug.Log("win !");
+        if (Application.platform == RuntimePlatform.Android && !isSent)
+        {
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.azesmwayreactnativeunity.ReactNativeUnityViewManager"))
+            {
+                string jsonString = "{\"score\":" + ScoreManager.Score + ",\"glissNodes\":" + ScoreManager.TotalGlissNodes + "}";
+                jc.CallStatic("sendMessageToMobileApp", jsonString);
+                Debug.Log("sendMessageToMobileApp " + ScoreManager.Score);
+                isSent = true;
+            }
+        }
+        RestartScene();
     }
     public void RestartScene()
     {
+        Debug.Log("Restarting Scene...");
         // Get the current scene's build index
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         ScoreManager.Score = 0;

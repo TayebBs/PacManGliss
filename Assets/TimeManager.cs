@@ -23,10 +23,7 @@ public class TimeManager : MonoBehaviour
     private float currentTime;
     public bool isRunning = false;
     public static TimeManager instance;
-    //  UiManager myUiManager;
-    bool isSent=false;
-  //  FinishManager myFinishManager;
-   public ScoreManager myScoreManager;
+    bool isSent = false;
 
     private void Awake()
     {
@@ -46,12 +43,9 @@ public class TimeManager : MonoBehaviour
 
     private void Start()
     {
-        // myUiManager = UiManager.instance;
-        //  myScoreManager = ScoreManager.instance;
-        //   myFinishManager = FinishManager.instance;
         PauseTime(true);
-        if (autoStart)
-            StartTimer();
+        // if (autoStart)
+        //     StartTimer();
     }
 
     private void Update()
@@ -73,19 +67,16 @@ public class TimeManager : MonoBehaviour
             }
             if (currentTime == 0)
             {
-                if (Application.platform == RuntimePlatform.Android&&!isSent)
+                if (Application.platform == RuntimePlatform.Android && !isSent)
                 {
                     using (AndroidJavaClass jc = new AndroidJavaClass("com.azesmwayreactnativeunity.ReactNativeUnityViewManager"))
                     {
-                        jc.CallStatic("sendMessageToMobileApp", ScoreManager.Score);
+                        string jsonString = "{\"score\":" + ScoreManager.Score + ",\"glissNodes\":" + ScoreManager.TotalGlissNodes + "}";
+                        jc.CallStatic("sendMessageToMobileApp", jsonString);
                         Debug.Log("sendMessageToMobileApp " + ScoreManager.Score);
                         isSent = true;
                     }
                 }
-                //myScoreManager.EndGame(false);
-                // myFinishManager.ShowButton();
-                // myUiManager.ShowLosePanel();
-
                 RestartScene();
             }
             // Update the UI Text to display the remaining time.
@@ -100,18 +91,17 @@ public class TimeManager : MonoBehaviour
         currentTime = totalTime;
         isRunning = true;
         OnTimerStart.Invoke();
-        // myFinishManager.HideButton();
     }
     public void RestartScene()
     {
+        Debug.Log("Restarting Scene...");
         // Get the current scene's build index
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         ScoreManager.Score = 0;
-
         // Reload the current scene
         SceneManager.LoadScene(currentSceneIndex);
     }
-        public void PauseTimer()
+    public void PauseTimer()
     {
         isRunning = false;
     }
@@ -128,13 +118,16 @@ public class TimeManager : MonoBehaviour
     }
     public void PauseTime(bool _isTrue)
     {
+        Debug.Log("PauseTime : " + _isTrue);
         if (_isTrue)
         {
             Time.timeScale = 0;
+            PauseTimer();
         }
         else
         {
             Time.timeScale = 1;
+            StartTimer();
         }
     }
 }

@@ -10,20 +10,30 @@ public class Eat : MonoBehaviour
         if (collision.gameObject.tag == "Node")
         {
             Destroy(collision.gameObject);
-            myScoreManager.AddScore(collision.gameObject.GetComponent<Node>().ObjectScore);
+            int _score = collision.gameObject.GetComponent<Node>().ObjectScore;
+            Debug.Log("_score : " + _score);
+            myScoreManager.AddScore(_score);
+            if (_score > 1)
+            {
+                myScoreManager.incrementGlissNodes();
+            }
+            if (ScoreManager.TotalGlissNodes == 3)
+            {
+                GetComponent<PacManController>().Win();
+            }
         }
-        if(collision.gameObject.tag == "Teleporter")
+
+        if (collision.gameObject.tag == "Teleporter")
         {
             Teleport(collision.gameObject.GetComponent<Teleporter>().position);
         }
-        if(collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy")
         {
             GetComponent<PacManController>().Die();
-            Debug.Log("die");
         }
     }
     public void Teleport(Vector2 _position)
     {
-        transform.position= _position;
+        transform.position = _position;
     }
 }

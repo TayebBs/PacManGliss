@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
     {
         m_Agent = GetComponent<NavMeshAgent>();
         m_Agent.updateRotation = false;
-        m_Agent.updateUpAxis=false;
+        m_Agent.updateUpAxis = false;
     }
     private void Update()
     {

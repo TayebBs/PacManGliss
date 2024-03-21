@@ -9,7 +9,7 @@ public class ColorManager : MonoBehaviour
 {
     public GameObject[] gameObjects = null;
     public Sprite[] blackGameObjects = null;
-   // public Sprite[] whiteGameObjects = null;
+    // public Sprite[] whiteGameObjects = null;
     public Sprite[] blueGameObjects = null;
     public Sprite[] yellowGameObjects = null;
     public GameObject level1;
@@ -17,15 +17,19 @@ public class ColorManager : MonoBehaviour
     public String color;
     private void Start()
     {
-       SelectRandomLevel();
-       ChooseColor(color);
+        SelectRandomLevel();
+        ChooseColor();
     }
+
     public void SetColor(string _color)
     {
+        Debug.Log("Set Color : " + _color);
         color = _color;
+        ChooseColor();
     }
-    public void ChooseColor(string color)
+    public void ChooseColor()
     {
+        Debug.Log("ChooseColor : " + color);
         switch (color)
         {
             case "Black":
