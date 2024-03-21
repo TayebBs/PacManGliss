@@ -14,6 +14,6 @@ public class Node : MonoBehaviour
     public int gCost;
     public int hCost;
     public Node parent;
-
+    public int ObjectScore;
     public int fCost => gCost + hCost;
 }

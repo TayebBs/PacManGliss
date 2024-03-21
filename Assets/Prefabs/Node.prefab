@@ -57,6 +57,7 @@ MonoBehaviour:
   gCost: 0
   hCost: 0
   parent: {fileID: 0}
+  ObjectScore: 1
 --- !u!212 &3749238735391497627
 SpriteRenderer:
   m_ObjectHideFlags: 0
